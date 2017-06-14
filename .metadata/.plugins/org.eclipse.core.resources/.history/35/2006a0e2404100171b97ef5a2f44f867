@@ -1,0 +1,16 @@
+
+public class PartEmp {
+	
+	public static class MapClass extends Mapper<LongWritable,Text,Text,Text>
+	
+	//public void map()
+
+
+	
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

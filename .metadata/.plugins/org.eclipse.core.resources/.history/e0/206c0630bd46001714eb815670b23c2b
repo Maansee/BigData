@@ -1,0 +1,28 @@
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+
+
+public class KeyValueToText {
+
+	public static class KeyValueMapper extends Mapper<Text, Text, Text, Text>
+	{
+		public void map(Text key, Text value, Context c) throws IOException, InterruptedException
+		{
+			c.write(key, value);
+		}
+	}
+	
+	public static void main(String[] args) throws IOException
+	{
+		Configuration conf = new Configuration();
+		Job job = Job.getInstance(conf, "Break string into 2 parts ie key and value");
+		
+		
+
+	}
+
+}

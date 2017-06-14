@@ -1,0 +1,26 @@
+import org.apache.hadoop.io.FloatWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+
+public class TopEmpCityDept {
+
+	
+	public static class MyMapper extends Mapper<LongWritable, Text, Text, Texte>
+	{
+		public void map(Text key, Text value, Context c)
+		{
+			String[] str = value.toString().split("-");
+			String dept = str[3];
+			String name_sal = str[1]+","+ str[4];
+			c.write(new Text(dept), new Text(name_sal));
+		}
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

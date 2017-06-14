@@ -1,0 +1,22 @@
+import org.apache.hadoop.io.FloatWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+
+public class TopEmpCityDept {
+
+	
+	public static class MyMapper extends Mapper<Text, Text, Text, FloatWritable>
+	{
+		public void map(Text key, Text value, Context c)
+		{
+			
+		}
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -1,0 +1,14 @@
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.mapreduce.Mapper;
+
+
+public class TextToNull {
+
+	public static class MyMapper extends Mapper<LongWritable, Text, KEYOUT, VALUEOUT>
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

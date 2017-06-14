@@ -1,0 +1,78 @@
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.FloatWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.Mapper.Context;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+import TopEmpCityDept.MyMapper;
+import TopEmpCityDept.MyReducer;
+
+
+public class TopEmpDeptCity {
+
+	public static class MyMapper extends Mapper<LongWritable, Text, Text, Text>
+	{
+		public void map(LongWritable key, Text value, Context c) throws IOException, InterruptedException
+		{
+			String[] str = value.toString().split("-");
+			String city = str[2];
+			String name_sal_dept = str[1]+","+ str[4]+","+str[3];
+			c.write(new Text(city), new Text(name_sal_dept));
+		}
+	}
+	
+
+	public static class MyReducer extends Reducer<Text, Text, Text, FloatWritable>
+	{
+		private Text outputKey = new Text();
+		
+		public void reduce(Text key, Iterable<Text> values, Context c) throws IOException, InterruptedException
+		{
+			
+		 float max = 0;	
+		 for (Text val : values)
+		{
+			 String [] str = val.toString().split(",");
+			 if (Float.parseFloat(str[1])>max)
+			 {
+				 max = Float.parseFloat(str[1]);
+				 String mykey =  key.toString()+'-'+ str[0] + '-' + str[2];
+				 outputKey.set(mykey);
+			 }
+			 
+	      	
+		}
+		 c.write(outputKey,new FloatWritable(max));
+			//c.write(key, values);
+		}
+	}
+	public static void main(String[] args) {
+		
+		Configuration conf = new Configuration();
+	    //conf.set("name", "value")
+	    
+	    Job job = Job.getInstance(conf, "Highest salary in each dept with city");
+	    job.setJarByClass(TopEmpCityDept.class);
+	    job.setMapperClass(MyMapper.class);
+	    
+	    //job.setPartitionerClass(MyPart.class);
+	    job.setReducerClass(MyReducer.class);
+	    //job.setNumReduceTasks(0);
+	    job.setMapOutputKeyClass(Text.class);
+	    job.setMapOutputValueClass(Text.class);
+	    FileInputFormat.addInputPath(job, new Path(args[0]));
+	    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+	    System.exit(job.waitForCompletion(true) ? 0 : 1);
+
+
+	}
+
+}

@@ -1,0 +1,26 @@
+import java.io.IOException;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Mapper.Context;
+
+
+public class TopEmpDeptCity {
+
+	public static class MyMapper extends Mapper<LongWritable, Text, Text, Text>
+	{
+		public void map(LongWritable key, Text value, Context c) throws IOException, InterruptedException
+		{
+			String[] str = value.toString().split("-");
+			String city = str[2];
+			String name_sal_dept = str[1]+","+ str[4]+","+str[3];
+			c.write(new Text(city), new Text(name_sal_dept));
+		}
+	}
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

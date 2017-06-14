@@ -1,0 +1,39 @@
+import java.io.IOException;
+import java.util.TreeMap;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.Reducer.Context;
+
+
+public class TopProduct {
+
+	
+	public static class MyMapper extends Mapper<LongWritable, Text, Text, LongWritable>
+	{
+		public void map(LongWritable key, Text value, Context c) throws IOException, InterruptedException
+		{
+			String [] str = value.toString().split(";");
+			String prodID = str[5];	
+			long tot_sales = Long.parseLong(str[8]);
+			c.write(new Text (prodID), new LongWritable(tot_sales));
+		}
+	}
+	
+	public static class MyReducer extends Reducer<Text, LongWritable, Text, LongWritable>
+	{
+		TreeMap<String, Long> TopProd = new TreeMap<String, Long>();
+		public void reduce(Text key, Iterable<LongWritable> values, Context c)
+		{
+			
+		}
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

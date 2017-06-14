@@ -1,0 +1,33 @@
+import java.io.IOException;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+
+
+public class TopProduct {
+
+	
+	public static class MyMapper extends Mapper<LongWritable, Text, Text, LongWritable>
+	{
+		public void map(LongWritable key, Text value, Context c) throws IOException, InterruptedException
+		{
+			String [] str = value.toString().split(";");
+			String prodID = str[5];	
+			long tot_sales = Long.parseLong(str[8]);
+			c.write(new Text (prodID), new LongWritable(tot_sales));
+		}
+	}
+	
+	public static class MyReducer extends Reducer<Text, LongWritable, Text, LongWritable>
+	{
+		public void reduce()
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

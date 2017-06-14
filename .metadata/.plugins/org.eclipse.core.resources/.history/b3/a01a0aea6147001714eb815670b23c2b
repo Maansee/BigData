@@ -1,0 +1,18 @@
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+
+public class TextToSequence {
+
+	public static class SeqMapper extends Mapper<LongWritable, Text, LongWritable, Text>
+	{
+		
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

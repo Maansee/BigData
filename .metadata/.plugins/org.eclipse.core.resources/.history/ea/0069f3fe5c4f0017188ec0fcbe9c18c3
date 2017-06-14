@@ -1,0 +1,13 @@
+package udfhive;
+
+import org.apache.hadoop.hive.ql.exec.UDF;
+import org.apache.hadoop.io.Text;
+
+public class ToLower extends UDF{
+
+	public Text evaluate(Text text)
+	{
+		return new Text(str);
+		
+	}
+}

@@ -1,0 +1,70 @@
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+
+
+public class TopCustomer {
+
+	
+	public static class MyMapper extends Mapper<LongWritable, Text, Text, Text>
+	{
+		public void map(LongWritable key, Text value, Context c) throws IOException, InterruptedException{
+		String [] str = value.toString().split(";");
+		String custID = str[1];
+		String amt = str[7];
+		c.write(new Text (amt), new Text (custID));
+	}
+	}
+	
+	public static class MyReducer extends Reducer<Text, Text, Text, Text>
+	{
+		private Text outputKey = new Text();
+		
+		public void reduce(Text key, Iterable<Text> values, Context c) throws IOException, InterruptedException
+		{
+			long max = 0;
+			
+			for(Text val : values)
+			{
+			 String info = val.toString();	
+			 String[] str = info.split(";");
+			 if(Long.parseLong(str[0])>max)
+			 {
+				max = Long.parseLong(str[0]); 
+				
+			 }
+			 c.write(key, val);
+			 
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		
+		 Configuration conf = new Configuration();
+		    //conf.set("name", "value")
+		    
+		    Job job = Job.getInstance(conf, "Highest amount spent by customer");
+		    job.setJarByClass(TopCustomer.class);
+		    job.setMapperClass(MyMapper.class);
+		    
+		    //job.setPartitionerClass(MyPart.class);
+		    job.setReducerClass(MyReducer.class);
+		    //job.setNumReduceTasks(0);
+		    job.setMapOutputKeyClass(Text.class);
+		    job.setMapOutputValueClass(Text.class);
+		    FileInputFormat.addInputPath(job, new Path(args[0]));
+		    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		    System.exit(job.waitForCompletion(true) ? 0 : 1);
+	}
+
+}

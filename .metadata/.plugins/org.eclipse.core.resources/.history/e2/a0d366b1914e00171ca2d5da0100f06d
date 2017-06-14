@@ -1,0 +1,27 @@
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+
+public class ViableProducts {
+
+	
+	public static class MyMapper extends Mapper<LongWritable, Text, Text, Text>
+	{
+		public void map(LongWritable key, Text value, Context c)
+		{
+		String str[] = value.toString().split(";");
+		String prod_id = (str[5];
+		String age_sales= str[2]+"-"+str[8];
+	
+		c.write(new Text(prod_id), new Text(age_sales));
+	}
+	}
+	
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

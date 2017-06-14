@@ -1,0 +1,22 @@
+import java.io.IOException;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+
+public class SequenceToText {
+
+	public static class SequenceMapper extends Mapper<LongWritable, Text, LongWritable, Text>	
+	{
+		public void map(LongWritable key, Text value, Context c) throws IOException, InterruptedException
+		{
+			c.write(key, value);
+		}
+	}
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

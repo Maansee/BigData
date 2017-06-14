@@ -1,0 +1,42 @@
+import java.io.IOException;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Partitioner;
+
+
+public class TopProductAge {
+
+	
+	public static class MyMapper extends Mapper<LongWritable, Text, Text, Text>
+	{
+		public void map(LongWritable key, Text value, Context c) throws IOException, InterruptedException
+		{
+			String str[] = value.toString().split(";");
+			String prod_id = str[5];
+			String age_catg= str[2]+"-"+str[4];
+		
+			c.write(new Text(prod_id), new Text(age_catg));
+		}
+	}
+	
+	
+	public static class MyPartitioner extends Partitioner<Text, Text>
+	{
+
+		@Override
+		public int getPartition(Text key, Text value, int numReduceTasks) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		
+	}
+	
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

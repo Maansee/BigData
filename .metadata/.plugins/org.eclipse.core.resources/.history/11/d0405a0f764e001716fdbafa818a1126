@@ -1,0 +1,137 @@
+import java.io.IOException;
+import java.util.TreeMap;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Partitioner;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+
+
+public class TopProductAge {
+
+	
+	public static class MyMapper extends Mapper<LongWritable, Text, LongWritable, Text>
+	{
+		public void map(LongWritable key, Text value, Context c) throws IOException, InterruptedException
+		{
+			String str[] = value.toString().split(";");
+			long prod_id = Long.parseLong(str[5]);
+			String age_sales= str[2]+"-"+str[8];
+		
+			c.write(new LongWritable(prod_id), new Text(age_sales));
+		}
+	}
+	
+	
+	public static class MyPartitioner extends Partitioner<LongWritable, Text>
+	{
+
+		@Override
+		public int getPartition(LongWritable key, Text value, int numReduceTasks) 
+		{
+			
+			String[] str = value.toString().split("-");
+			
+			if(str[0].equals("A"))
+				return 0;
+			
+			else if(str[0].equals("B"))
+				return 1;
+			
+			else if(str[0].equals("C"))
+				return 2;
+			
+			else if(str[0].equals("D"))
+				return 3;
+			
+			else if(str[0].equals("E"))
+				return 4;
+			
+			else if(str[0].equals("F"))
+				return 5;
+			
+			else if(str[0].equals("G"))
+				return 6;
+			
+			else if(str[0].equals("H"))
+				return 7;
+			
+			else if(str[0].equals("I"))
+				return 8;
+			
+			else if(str[0].equals("J"))
+				return 9;
+			
+			else
+				return 10;
+			
+		}
+		
+	}
+	
+	
+	public static class MyReducer extends Reducer<LongWritable, Text, Text, LongWritable>
+	{
+		TreeMap<String,Long> TopProductAge = new TreeMap<String, Long>();
+		
+		public void reduce(LongWritable key, Iterable<LongWritable> values, Context c)
+		{
+			long ProdID= (Long) null;
+			
+			long sum = 0L;
+			
+			for(LongWritable val : values)
+			{
+				sum+=val.get();
+			}
+			
+			ProdID = Long.parseLong(key.toString());
+			TopProductAge.put(sum,ProdID);
+		
+		
+		if (TopProductAge.size()>5)
+		{
+			TopProductAge.remove(TopProductAge.firstKey());
+		}
+		
+		}
+		
+		public void cleanup(Context c) throws IOException, InterruptedException
+		{
+			for(Long var: TopProductAge.descendingMap().keySet())
+			{
+				c.write(new LongWritable(TopProductAge.get(var)),new LongWritable(var));
+			}
+		}
+		
+	}
+	
+	
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+		
+
+		 Configuration conf = new Configuration();
+		    //conf.set("name", "value")
+		    
+		    Job job = Job.getInstance(conf, "Top 5 Viable Products");
+		    job.setJarByClass(TopProductAge.class);
+		    job.setMapperClass(MyMapper.class);
+		    
+		    job.setPartitionerClass(MyPartitioner.class);
+		    job.setReducerClass(MyReducer.class);
+		    job.setNumReduceTasks(11);
+		    job.setOutputKeyClass(LongWritable.class);
+		    job.setOutputValueClass(LongWritable.class);
+		    FileInputFormat.addInputPath(job, new Path(args[0]));
+		    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		    System.exit(job.waitForCompletion(true) ? 0 : 1);
+	}
+
+}
